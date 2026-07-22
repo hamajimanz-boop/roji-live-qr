@@ -3,79 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>本日のメンバー</title>
+<title>出演メンバー</title>
 <style>
   :root {
     color-scheme: dark;
-    --accent: #ff3b7f;
-    --accent-2: #4fd8ff;
-    --text: #f5f5f7;
-    --sub: #c7c7d1;
+    --accent: #d9a441;
+    --text: #f2efe9;
+    --sub: #a8a49c;
+    --line: rgba(242,239,233,0.18);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
     margin: 0;
     min-height: 100%;
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-family: "Hiragino Mincho ProN", "Hiragino Sans", -apple-system, serif;
   }
   body {
     display: flex;
     justify-content: center;
     background:
-      linear-gradient(180deg, rgba(4,4,10,0.72) 0%, rgba(4,4,10,0.4) 30%, rgba(4,4,10,0.55) 65%, rgba(2,2,6,0.9) 100%),
+      linear-gradient(180deg, rgba(3,3,6,0.82) 0%, rgba(3,3,6,0.35) 32%, rgba(3,3,6,0.55) 68%, rgba(3,3,6,0.94) 100%),
       url('assets/bg.jpg') center 40% / cover no-repeat;
     min-height: 100vh;
   }
   main {
     width: 100%;
-    max-width: 480px;
-    padding: 56px 20px 40px;
+    max-width: 460px;
+    padding: 64px 26px 40px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
   }
-  .badge {
-    align-self: center;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18);
-    backdrop-filter: blur(8px);
-    padding: 5px 14px;
-    border-radius: 999px;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
+  .eyebrow {
+    font-family: -apple-system, "Hiragino Sans", sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
     color: var(--sub);
-    margin-bottom: 18px;
-  }
-  .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px 2px var(--accent);
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
+    margin: 0 0 14px;
   }
   h1 {
-    text-align: center;
-    font-size: 1.7rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    margin: 0 0 8px;
-    text-shadow: 0 0 24px rgba(255,59,127,0.45), 0 2px 12px rgba(0,0,0,0.6);
-  }
-  p.sub {
-    text-align: center;
-    color: var(--sub);
-    font-size: 0.88rem;
-    margin: 0 0 40px;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+    font-size: 2.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+    margin: 0 0 56px;
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
   }
   ul {
     list-style: none;
@@ -83,77 +57,66 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
   a.member {
     display: flex;
     align-items: center;
     gap: 16px;
-    background: rgba(22,22,30,0.55);
-    border: 1px solid rgba(255,255,255,0.14);
-    border-radius: 18px;
-    padding: 16px 18px;
+    padding: 18px 20px;
+    background: rgba(10,10,14,0.62);
+    border: 1px solid rgba(242,239,233,0.14);
+    border-radius: 10px;
     text-decoration: none;
     color: var(--text);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
-    transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease;
   }
   a.member:active {
-    background: rgba(255,59,127,0.14);
-    border-color: rgba(255,59,127,0.5);
-    transform: scale(0.97);
+    background: rgba(10,10,14,0.8);
+    border-color: rgba(217,164,65,0.5);
   }
-  .icon {
-    font-size: 1.7rem;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.35);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 14px;
+  a.member:active .num { color: var(--accent); }
+  .num {
+    font-size: 0.85rem;
+    color: var(--sub);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
     flex-shrink: 0;
+    width: 22px;
+    transition: color 0.15s ease;
   }
   .info { flex: 1; min-width: 0; }
   .instrument {
-    font-size: 0.7rem;
-    color: var(--accent-2);
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-family: -apple-system, "Hiragino Sans", sans-serif;
+    font-size: 0.64rem;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
   }
   .handle {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-top: 3px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-top: 5px;
+    letter-spacing: 0.02em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: opacity 0.15s ease;
   }
-  .chev {
+  .arrow {
+    font-family: -apple-system, sans-serif;
     color: var(--sub);
-    font-size: 1.2rem;
-    opacity: 0.7;
-  }
-  footer {
-    text-align: center;
-    margin-top: 44px;
-    color: rgba(255,255,255,0.55);
-    font-size: 0.72rem;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+    font-size: 0.9rem;
+    align-self: center;
   }
 </style>
 </head>
 <body>
 <main>
-  <div class="badge"><span class="dot"></span>LIVE NOW</div>
-  <h1>本日の演奏メンバー</h1>
-  <p class="sub">タップしてInstagramをチェック</p>
+  <p class="eyebrow">TONIGHT'S LINEUP</p>
+  <h1>出演</h1>
   <ul id="member-list"></ul>
-  <footer>Tap a card to open Instagram</footer>
 </main>
 
 <script>
@@ -161,10 +124,10 @@
   const NAMESPACE = "roji-live-7bab4fe7";
 
   const members = [
-    { instrument: "Guitar", emoji: "🎸", counter: "guitar1", url: "https://www.instagram.com/uruseiya696?igsh=MWt5bTY5OWx0bDBlcQ==" },
-    { instrument: "Guitar", emoji: "🎸", counter: "guitar2", url: "https://www.instagram.com/kei_0727_nerv_?igsh=ZWY0cmNkc2M0dTI2" },
-    { instrument: "Bass",   emoji: "🎻", counter: "bass",    url: "https://www.instagram.com/shinonome_la_end?igsh=MW1nY3NvdmxndTJkdQ==" },
-    { instrument: "Drums",  emoji: "🥁", counter: "drums",   url: "https://www.instagram.com/2291ara?igsh=MWtxMHhmazQ4Z296dA%3D%3D&utm_source=qr" }
+    { instrument: "Guitar", counter: "guitar1", url: "https://www.instagram.com/uruseiya696?igsh=MWt5bTY5OWx0bDBlcQ==" },
+    { instrument: "Guitar", counter: "guitar2", url: "https://www.instagram.com/kei_0727_nerv_?igsh=ZWY0cmNkc2M0dTI2" },
+    { instrument: "Bass",   counter: "bass",    url: "https://www.instagram.com/shinonome_la_end?igsh=MW1nY3NvdmxndTJkdQ==" },
+    { instrument: "Drums",  counter: "drums",   url: "https://www.instagram.com/2291ara?igsh=MWtxMHhmazQ4Z296dA%3D%3D&utm_source=qr" }
   ];
 
   function handleFromUrl(url) {
@@ -177,7 +140,7 @@
   }
 
   const list = document.getElementById("member-list");
-  members.forEach((m) => {
+  members.forEach((m, i) => {
     const li = document.createElement("li");
     const a = document.createElement("a");
     a.className = "member";
@@ -185,12 +148,12 @@
     a.rel = "noopener";
 
     a.innerHTML = `
-      <div class="icon">${m.emoji}</div>
+      <div class="num">${String(i + 1).padStart(2, "0")}</div>
       <div class="info">
         <div class="instrument">${m.instrument}</div>
         <div class="handle">${handleFromUrl(m.url)}</div>
       </div>
-      <div class="chev">›</div>
+      <div class="arrow">→</div>
     `;
 
     a.addEventListener("click", () => {
