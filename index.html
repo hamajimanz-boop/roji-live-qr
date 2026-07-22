@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>本日のメンバー</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0b0f;
+    --card: #16161d;
+    --card-tap: #1f1f29;
+    --accent: #ff3b7f;
+    --text: #f5f5f7;
+    --sub: #9a9aa5;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, #1a1a24 0%, #0b0b0f 60%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+    display: flex;
+    justify-content: center;
+  }
+  main {
+    width: 100%;
+    max-width: 480px;
+    padding: 48px 20px 40px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin: 0 0 6px;
+  }
+  p.sub {
+    text-align: center;
+    color: var(--sub);
+    font-size: 0.85rem;
+    margin: 0 0 36px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  a.member {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid #26262f;
+    border-radius: 16px;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  a.member:active {
+    background: var(--card-tap);
+    transform: scale(0.98);
+  }
+  .icon {
+    font-size: 1.8rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0e0e13;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+  .info { flex: 1; min-width: 0; }
+  .instrument {
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .handle {
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chev {
+    color: var(--sub);
+    font-size: 1.1rem;
+  }
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #4a4a54;
+    font-size: 0.72rem;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>本日の演奏メンバー</h1>
+  <p class="sub">タップしてInstagramをチェック</p>
+  <ul id="member-list"></ul>
+  <footer>Tap a card to open Instagram</footer>
+</main>
+
+<script>
+  // 集計用ネームスペース（推測されにくいランダム値）
+  const NAMESPACE = "roji-live-7bab4fe7";
+
+  const members = [
+    { instrument: "Guitar", emoji: "🎸", counter: "guitar1", url: "https://www.instagram.com/uruseiya696?igsh=MWt5bTY5OWx0bDBlcQ==" },
+    { instrument: "Guitar", emoji: "🎸", counter: "guitar2", url: "https://www.instagram.com/kei_0727_nerv_?igsh=ZWY0cmNkc2M0dTI2" },
+    { instrument: "Bass",   emoji: "🎻", counter: "bass",    url: "https://www.instagram.com/shinonome_la_end?igsh=MW1nY3NvdmxndTJkdQ==" },
+    { instrument: "Drums",  emoji: "🥁", counter: "drums",   url: "https://www.instagram.com/2291ara?igsh=MWtxMHhmazQ4Z296dA%3D%3D&utm_source=qr" }
+  ];
+
+  function handleFromUrl(url) {
+    try {
+      const path = new URL(url).pathname;
+      return "@" + path.split("/").filter(Boolean)[0];
+    } catch (e) {
+      return "";
+    }
+  }
+
+  const list = document.getElementById("member-list");
+  members.forEach((m) => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.className = "member";
+    a.href = m.url;
+    a.rel = "noopener";
+
+    a.innerHTML = `
+      <div class="icon">${m.emoji}</div>
+      <div class="info">
+        <div class="instrument">${m.instrument}</div>
+        <div class="handle">${handleFromUrl(m.url)}</div>
+      </div>
+      <div class="chev">›</div>
+    `;
+
+    a.addEventListener("click", () => {
+      const beacon = `https://api.counterapi.dev/v1/${NAMESPACE}/${m.counter}/up`;
+      fetch(beacon, { mode: "no-cors", keepalive: true }).catch(() => {});
+    });
+
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+</script>
+</body>
+</html>

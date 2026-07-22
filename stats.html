@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>集計（非公開）</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #0b0b0f;
+    color: #f5f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  main { width: 100%; max-width: 480px; }
+  h1 { font-size: 1.2rem; margin-bottom: 24px; }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #16161d;
+    border: 1px solid #26262f;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+  }
+  .label { font-weight: 600; }
+  .count { font-size: 1.3rem; font-weight: 700; color: #ff3b7f; }
+  .bar-bg { height: 6px; background: #26262f; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; background: #ff3b7f; width: 0%; transition: width 0.4s ease; }
+  .cell { flex: 1; }
+  button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #ff3b7f;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .total { color: #9a9aa5; font-size: 0.8rem; margin-top: 20px; text-align: center; }
+</style>
+</head>
+<body>
+<main>
+  <h1>タップ集計（あなただけが見れます）</h1>
+  <div id="rows"></div>
+  <button onclick="load()">更新</button>
+  <div class="total" id="total"></div>
+</main>
+
+<script>
+  const NAMESPACE = "roji-live-7bab4fe7";
+  const members = [
+    { instrument: "Guitar", counter: "guitar1", handle: "@uruseiya696" },
+    { instrument: "Guitar", counter: "guitar2", handle: "@kei_0727_nerv_" },
+    { instrument: "Bass",   counter: "bass",    handle: "@shinonome_la_end" },
+    { instrument: "Drums",  counter: "drums",   handle: "@2291ara" }
+  ];
+
+  async function load() {
+    const rowsEl = document.getElementById("rows");
+    rowsEl.innerHTML = "読み込み中...";
+    const results = await Promise.all(members.map(async (m) => {
+      try {
+        const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${m.counter}`);
+        const data = await res.json();
+        return { ...m, count: data.count || 0 };
+      } catch (e) {
+        return { ...m, count: 0 };
+      }
+    }));
+
+    const max = Math.max(1, ...results.map(r => r.count));
+    const total = results.reduce((s, r) => s + r.count, 0);
+
+    rowsEl.innerHTML = results.map(r => `
+      <div class="row">
+        <div class="cell">
+          <div class="label">${r.instrument} ${r.handle}</div>
+          <div class="bar-bg"><div class="bar-fill" style="width:${(r.count / max) * 100}%"></div></div>
+        </div>
+        <div class="count">${r.count}</div>
+      </div>
+    `).join("");
+
+    document.getElementById("total").textContent = `合計タップ数: ${total}`;
+  }
+
+  load();
+</script>
+</body>
+</html>
